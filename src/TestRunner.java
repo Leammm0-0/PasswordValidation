@@ -17,25 +17,37 @@ public class TestRunner {
         System.out.println("== Password Validation ==");
 
         // ตัวอย่าง assertion ปกติ (ตัวแทนกลุ่ม valid)
-        check("'Abcdef12' valid", PasswordValidator.validate("Abcdef12"));
+        check("'Abcdef12' valid", PasswordValidator.validate("Abcdef12") == true);
 
         // ตัวอย่างแพตเทิร์นทดสอบ "ต้อง throw" ด้วย try/catch
         boolean threw = false;
         try { PasswordValidator.validate(null); }
         catch (IllegalArgumentException e) { threw = true; }
-        check("null -> throws IllegalArgumentException", threw);
+        check("null -> throws IllegalArgumentException", threw == true);
 
         // TODO: R2 - boundary ความยาว (เช่น 7, 8, 20, 21)
+        check("pw len < 8", PasswordValidator.validate("Aa345") == false);
+        check("pw len = 8", PasswordValidator.validate("Aa345678")== true);
+        
+        check("pw len > 20", PasswordValidator.validate("Aaaaaaaaaa12345678910") == false);
+        check("pw len = 20", PasswordValidator.validate("Aaaaaaaaaa1234567891") == true);
 
         // TODO: R3 - ไม่มีตัวพิมพ์ใหญ่ -> false
+        check("pw no upper", PasswordValidator.validate("aaaa1547") == false);
 
         // TODO: R4 - ไม่มีตัวพิมพ์เล็ก -> false
+        check("pw no lower", PasswordValidator.validate("AAAA1547") == false);
 
         // TODO: R5 - ไม่มีตัวเลข -> false
+        check("pw no num", PasswordValidator.validate("Aaaaaaaaa") == false);
 
         // TODO: R6 - มีช่องว่าง -> false
+        check("pw space", PasswordValidator.validate("Aa 2345678") == false);
 
         // TODO: boundary อื่นๆ ที่คุณคิดว่าจำเป็น
+        check("pw no other", PasswordValidator.validate("!!!!!!!!") == false);
+        check("pw not thai", PasswordValidator.validate("อัยบ้า") == false);
+
 
         System.out.println("==================================");
         System.out.printf("PASS %d / FAIL %d%n", pass, fail);
